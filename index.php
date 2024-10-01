@@ -30,6 +30,11 @@ try {
                 }
                 $id = $data['id'];
                 $controller_object->index($id);
+            } elseif ($action == 'verify') {
+                foreach ($_GET as $key => $value) {
+                    $data[$key] = htmlspecialchars($value);
+                }
+                $controller_object->verify($data);
             } else {
                 echo json_encode(['sucess' => false, 'message' => 'A ação solicitada não existe']);
             }
@@ -41,7 +46,7 @@ try {
                 $data[$key] = htmlspecialchars($value);
             }
 
-            if ($action != 'login' && $action != 'create_login') {
+            if ($action != 'login' && $action != 'create_login' && $action != 'update_password') {
                 session_start();
 
                 if (!isset($_SESSION['usuario_id'])) {
@@ -63,6 +68,10 @@ try {
                 } 
                 if ($action == 'login') {
                     $controller_object->login($data);
+                }
+
+                if ($action == 'update_password') {
+                    $controller_object->update_password($data);
                 }
             }
             break;

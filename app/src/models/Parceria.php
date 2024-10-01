@@ -47,8 +47,9 @@ class Parceria {
     }
 
     public function atualizar_registro() {
-        $query = "UPDATE parcerias SET nome = :nome, descricao = :descricao, data_criacao = :data_criacao, data_atualizacao = :data_atualizacao";
+        $query = "UPDATE parcerias SET nome = :nome, descricao = :descricao, data_criacao = :data_criacao, data_atualizacao = :data_atualizacao WHERE id = :id";
         $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(":id", $this->id, PDO::PARAM_INT);
         $stmt->bindValue(":nome", $this->nome, PDO::PARAM_STR);
         $stmt->bindValue(":descricao", $this->descricao, PDO::PARAM_STR);
         $stmt->bindValue(":data_criacao", $this->data_criacao, PDO::PARAM_STR);

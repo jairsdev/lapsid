@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 use App\Config\Conexao, PDO;
+use SQLite3Stmt;
 
 class Pagina {
     public PDO $conn;
@@ -47,8 +48,9 @@ class Pagina {
     }
 
     public function atualizar_registro() {
-        $query = "UPDATE conteudo_paginas SET titulo = :titulo, conteudo = :conteudo, data_criacao = :data_criacao, data_atualizacao = :data_atualizacao";
+        $query = "UPDATE conteudo_paginas SET titulo = :titulo, conteudo = :conteudo, data_criacao = :data_criacao, data_atualizacao = :data_atualizacao WHERE id = :id";
         $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(":id", $this->id, PDO::PARAM_INT);
         $stmt->bindValue(":titulo", $this->titulo, PDO::PARAM_STR);
         $stmt->bindValue(":conteudo", $this->conteudo, PDO::PARAM_STR);
         $stmt->bindValue(":data_criacao", $this->data_criacao, PDO::PARAM_STR);

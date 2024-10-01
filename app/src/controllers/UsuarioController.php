@@ -97,8 +97,64 @@ class UsuarioController {
             echo json_encode(['sucess' => true, 'message' => 'Usuário criado com sucesso']);
             return;
         } else {
-            echo json_encode(['message' => 'Erro ao criar o usuário']);
+            echo json_encode(['sucess' => false, 'message' => 'Erro ao criar o usuário']);
             return;
         }
+    }
+
+    public function verify($data) {
+        if (empty($data['email'])) {
+            echo json_encode(['sucess' => false, 'message' => 'O campo email está vazio']);
+            return;
+        }
+
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            echo json_encode(['sucess' => false, 'message' => 'O email é inválido']);
+            return;
+        }
+
+        $this->usuario->email = $data['email'];
+        $retorno = $this->usuario->consultar_email();
+
+        if ($retorno == 'nao_encontrado') {
+            echo json_encode(['sucess' => false, 'message' => 'O email não foi encontrado']);
+            return;
+        } elseif ($retorno === false) {
+            echo json_encode(['sucess' => false, 'message' => 'Houve um problema interno, tente novamente mais tarde ']);
+            return;
+        } else {
+            echo json_encode($retorno);
+        }
+    }
+
+    public function update_password($data) {
+        if (empty($data['senha_antiga'])) {
+            echo json_encode(['sucess' => false, 'message' => 'O campo da senha antiga está vazio']);
+            return;
+        }
+
+        if (empty($data['senha'])) {
+            echo json_encode(['sucess' => false, 'message' => 'O campo senha está vazio']);
+            return;
+        }
+
+        $this->usuario->senha = $data['senha'];
+        $this->usuario->id = $data['id'];
+        $retorno = $this->usuario->atualizar_senha($data['senha_antiga']);
+
+        if ($retorno === 'senha_errada') {
+            echo json_encode(['sucess' => false, 'message' => 'A senha antiga está incorreta']);
+            return;
+        } elseif ($retorno) {
+            echo json_encode(['sucess' => false, 'message' => 'Houve um problema interno, tente novamente mais tarde ']);
+            return;
+        } else {
+            echo json_encode(['sucess' => true, 'message' => 'Senha atualizada com sucesso ']);
+            return;
+        }
+    }
+
+    public function logout() {
+        
     }
 }
