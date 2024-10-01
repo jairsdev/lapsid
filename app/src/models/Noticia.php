@@ -49,13 +49,12 @@ class Noticia {
     }
 
     public function atualizar_registro() {
-        $query = "UPDATE noticias SET titulo = :titulo, conteudo = :conteudo, autor_id = :autor_id, data_criacao = :data_criacao, data_atualizacao = :data_atualizacao WHERE id = :id";
+        $query = "UPDATE noticias SET titulo = :titulo, conteudo = :conteudo, autor_id = :autor_id, data_atualizacao = :data_atualizacao WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindValue(":id", $this->id, PDO::PARAM_INT);
         $stmt->bindValue(":titulo", $this->titulo, PDO::PARAM_STR);
         $stmt->bindValue(":conteudo", $this->conteudo, PDO::PARAM_STR);
         $stmt->bindValue(":autor_id",$this->autor_id, PDO::PARAM_INT);
-        $stmt->bindValue(":data_criacao", $this->data_criacao, PDO::PARAM_STR);
         $stmt->bindValue(":data_atualizacao", $this->data_atualizacao, PDO::PARAM_STR);
 
         if ($stmt->execute()) {

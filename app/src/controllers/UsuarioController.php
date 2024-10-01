@@ -163,8 +163,11 @@ class UsuarioController {
 
     public function logout() {
         session_start();
+        if (isset($_SESSION['usuario_id'])) {
+            echo json_encode(['sucess' => true, 'message' => 'Usuário deslogado com sucesso']);
+            return;
+        }
         $_SESSION = array();
         session_destroy();
-        echo json_encode(['sucess' => true, 'message' => 'Usuário deslogado com sucesso']);
     }
 }
