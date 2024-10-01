@@ -46,13 +46,15 @@ try {
                 $data[$key] = htmlspecialchars($value);
             }
 
-            if ($action != 'login' && $action != 'create_login' && $action != 'update_password') {
+            if ($action != 'login' && $action != 'create_login' && $action != 'update_password' && $action != 'logout') {
                 session_start();
 
                 if (!isset($_SESSION['usuario_id'])) {
                     echo json_encode(['sucess' => false, 'message' => 'Sessão inválida ou expirada']);
                     exit;
                 }
+
+                $data['autor_id'] = $_SESSION['usuario_id'];
                 if ($action == 'insert') {
                     $controller_object->insert($data);
                 } elseif ($action == 'delete') {
@@ -71,7 +73,21 @@ try {
                 }
 
                 if ($action == 'update_password') {
+                    session_start();
+                    if (isset($_SESSION['usuario_id'])) {
+                        $data['id'] = $_SESSION['usuario_id'];
+                    } elseif (isset($_SESSION['temporario_id'])) {
+                        $data['id'] = $_SESSION['temporario_id'];
+                        $controller_object->logout();
+                    } else {
+                        echo json_encode(['sucess' => false, 'message' => 'Não foi possível solicitar a alteração na senha']);
+                        exit;
+                    } 
                     $controller_object->update_password($data);
+                }
+
+                if ($action == 'logout') {
+                    $controller_object->logout();
                 }
             }
             break;

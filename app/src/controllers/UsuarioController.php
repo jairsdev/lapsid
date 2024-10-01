@@ -123,6 +123,8 @@ class UsuarioController {
             echo json_encode(['sucess' => false, 'message' => 'Houve um problema interno, tente novamente mais tarde ']);
             return;
         } else {
+            session_start();
+            $_SESSION['temporario_id'] = $retorno['id'];
             echo json_encode($retorno);
         }
     }
@@ -138,23 +140,31 @@ class UsuarioController {
             return;
         }
 
+        if ($data['senha'] != $data['senha_confirmacao']) {
+            echo json_encode(['sucess' => false, 'message' => 'A confirmação da senha não corresponde. Verifique e tente novamente']);
+            return;
+        }
+
         $this->usuario->senha = $data['senha'];
         $this->usuario->id = $data['id'];
         $retorno = $this->usuario->atualizar_senha($data['senha_antiga']);
-
+        
         if ($retorno === 'senha_errada') {
             echo json_encode(['sucess' => false, 'message' => 'A senha antiga está incorreta']);
             return;
-        } elseif ($retorno) {
+        } elseif ($retorno === false) {
             echo json_encode(['sucess' => false, 'message' => 'Houve um problema interno, tente novamente mais tarde ']);
             return;
         } else {
-            echo json_encode(['sucess' => true, 'message' => 'Senha atualizada com sucesso ']);
+            echo json_encode(['sucess' => true, 'message' => 'Senha atualizada com sucesso']);
             return;
         }
     }
 
     public function logout() {
-        
+        session_start();
+        $_SESSION = array();
+        session_destroy();
+        echo json_encode(['sucess' => true, 'message' => 'Usuário deslogado com sucesso']);
     }
 }
