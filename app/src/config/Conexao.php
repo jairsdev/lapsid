@@ -6,7 +6,7 @@ class Conexao {
     private $host = 'localhost';
     private $db_name = 'lapsid';
     private $username = 'root';
-    private $password = 'Lolpoplol17!';
+    private $password = 'senha_do_banco';
     public $conn;
 
     public function getConnection() {
