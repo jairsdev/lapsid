@@ -17,7 +17,7 @@ function load (string $controller) {
 }
 
 $routes = [
-        "index.php" => fn() => load("PaginaController"),
+        "home" => fn() => load("PaginaController"),
         "noticias" => fn() => load("NoticiaController"),
         "parcerias" => fn() => load("ParceriaController"),
         "publicacao" => fn() => load("PublicacaoController"),
