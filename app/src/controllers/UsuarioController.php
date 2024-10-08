@@ -23,6 +23,7 @@ class UsuarioController {
 
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             echo json_encode(['sucess' => false, 'message' => 'O email é inválido']);
+            http_response_code(400);
             return;
         }
 
@@ -46,11 +47,17 @@ class UsuarioController {
             echo json_encode(['success' => true, 'message' => 'Login bem-sucedido']);
             session_start();
             $_SESSION['usuario_id'] = $retorno['id'];
+            $_SESSION['nome_usuario'] = $retorno['nome'];
             return;
         }
     }
 
     public function create_login($data) {
+        if (empty($data['nome'])) {
+            echo json_encode(['sucess' => false, 'message' => 'O campo nome está vazio']);
+            return;
+        }
+
         if (empty($data['email'])) {
             echo json_encode(['sucess' => false, 'message' => 'O campo email está vazio']);
             return;
@@ -129,6 +136,28 @@ class UsuarioController {
         }
     }
 
+    public function update_user($data) {
+        if (empty($data['nome'])) {
+            echo json_encode(['sucess' => false, 'message' => 'O campo nome está vazio']);
+            return;
+        }
+
+        if (empty($data['email'])) {
+            echo json_encode(['sucess' => false, 'message' => 'O campo email está vazio']);
+            return;
+        }
+
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            echo json_encode(['sucess' => false, 'message' => 'O email é inválido']);
+            return;
+        }
+
+        $this->usuario->nome = $data['nome'];
+        $this->usuario->email = $data['email'];
+
+        $retorno = $this->usuario->atualizar_usuario($data['email_antigo']);
+    }
+
     public function update_password($data) {
         if (empty($data['senha_antiga'])) {
             echo json_encode(['sucess' => false, 'message' => 'O campo da senha antiga está vazio']);
@@ -165,9 +194,11 @@ class UsuarioController {
         session_start();
         if (isset($_SESSION['usuario_id'])) {
             echo json_encode(['sucess' => true, 'message' => 'Usuário deslogado com sucesso']);
+            $_SESSION = array();
+            session_destroy();
             return;
-        }
-        $_SESSION = array();
-        session_destroy();
+        } 
+
+        echo json_encode(['sucess' => true, 'message' => 'O usuário já esta deslogado']);
     }
 }

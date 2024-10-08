@@ -84,6 +84,20 @@ class Usuario {
         return false;
     }
 
+    public function atualizar_usuario($email_antigo) {
+        $query = "UPDATE usuarios SET nome = :nome, email = :email WHERE email = :email_antigo";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(":nome", $this->nome);
+        $stmt->bindValue(":email", $this->email);
+        $stmt->bindValue(":email_antigo", $email_antigo);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private function consultar_senha() {
         $query = "SELECT senha from usuarios WHERE id = :id";
         $stmt = $this->conn->prepare($query);

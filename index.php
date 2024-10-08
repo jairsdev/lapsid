@@ -7,7 +7,16 @@ use Exception;
 require_once "./app/routers/routes.php";
 require_once './vendor/autoload.php';
 
-header('Content-Type: application/json; charset=UTF-8');
+header('Access-Control-Allow-Origin: http://localhost');
+
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(204);
+    exit();
+}
 
 try {
     $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
@@ -25,9 +34,7 @@ try {
             if ($action === 'index_all') {
                 $controller_object->index_all();
             } elseif ($action == 'index') {
-                foreach ($_GET as $key => $value) {
-                    $data[$key] = htmlspecialchars($value);
-                }
+                $data = json_decode(file_get_contents('php://input'), true);
                 $id = $data['id'];
                 $controller_object->index($id);
             } else {
@@ -36,16 +43,13 @@ try {
             break;
         case 'POST':
             $action = $_GET['action'] ?? null;
-            $data = array();
-            foreach ($_POST as $key => $value) {
-                $data[$key] = htmlspecialchars($value);
-            }
+            $data = json_decode(file_get_contents('php://input'), true);
 
             if ($action != 'login' && $action != 'create_login' && $action != 'update_password' && $action != 'logout' && $action != 'verify') {
                 session_start();
 
                 if (!isset($_SESSION['usuario_id'])) {
-                    echo json_encode(['sucess' => false, 'message' => 'Sessão inválida ou expirada']);
+                    echo json_encode(['sucess' => false, 'message' => "Sessão inválida ou expirada"]);
                     exit;
                 }
 

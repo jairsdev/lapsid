@@ -21,5 +21,6 @@ $routes = [
         "noticias" => fn() => load("NoticiaController"),
         "parcerias" => fn() => load("ParceriaController"),
         "publicacao" => fn() => load("PublicacaoController"),
+        "equipe" => fn() => load("EquipeController"),
         "usuario" => fn() => load("UsuarioController")
 ];
